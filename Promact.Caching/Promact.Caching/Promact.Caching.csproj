@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Promact.Core" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Promact.Core" Version="1.0.0.2" />
+    <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
+    <PackageReference Include="xxHash.Core" Version="2.0.1" />
   </ItemGroup>
 
 </Project>
