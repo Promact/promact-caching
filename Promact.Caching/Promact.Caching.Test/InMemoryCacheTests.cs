@@ -1,12 +1,18 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.Options;
 using Promact.Core.Caching;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Promact.Caching.Test
-{
+{    
     [TestClass]
-    public class RedisCacheTests
+    public class InMemoryCacheTests
     {
         private IDistributedCache _distributedCache;
         private ICachingService _cacheService;
@@ -14,11 +20,8 @@ namespace Promact.Caching.Test
         [TestInitialize]
         public void Setup()
         {
-            _distributedCache = new RedisCache(new RedisCacheOptions
-            {
-                Configuration = "localhost:6379"
-            });
-
+            IOptions<MemoryDistributedCacheOptions> options = Options.Create(new MemoryDistributedCacheOptions());
+            _distributedCache = new MemoryDistributedCache(options);
             _cacheService = new DistributedCachingServices(_distributedCache);
         }
 
@@ -84,11 +87,5 @@ namespace Promact.Caching.Test
         {
             _keys.ToList().ForEach(key => _cacheService.Remove(key));
         }
-    }
-
-    internal class TestData
-    {
-        public string Name { get; set; }
-        public int Age { get; set; }
     }
 }

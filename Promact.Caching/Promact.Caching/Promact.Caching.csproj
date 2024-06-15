@@ -12,9 +12,19 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.6" />
-    <PackageReference Include="Promact.Core" Version="1.0.0.2" />
+    <PackageReference Include="Promact.Core" Version="1.0.0.3" />
     <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
     <PackageReference Include="xxHash.Core" Version="2.0.1" />
   </ItemGroup>
+	
+    <PropertyGroup>        
+        <PackageReadmeFile>README.md</PackageReadmeFile>        
+        <RepositoryUrl>https://github.com/Promact/promact-caching.git</RepositoryUrl>        
+        <PackageProjectUrl>https://github.com/Promact/promact-caching</PackageProjectUrl>        
+    </PropertyGroup>
+
+    <ItemGroup>        
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />        
+    </ItemGroup>
 
 </Project>

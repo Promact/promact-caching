@@ -4,6 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Promact.Core.Caching;
 using StackExchange.Redis;
+using System.Collections;
 using System.Reflection;
 using System.Text.Json;
 
@@ -59,18 +60,43 @@ namespace Promact.Caching
             {
                 var memoryCache = _distributedCache as MemoryDistributedCache;
                 var cache = memoryCache.GetType().GetField("_memCache", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(memoryCache) as MemoryCache;
-                dynamic _coherentState = cache.GetType().GetField("_coherentState", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(cache);
+                var _coherentState = cache.GetType().GetField("_coherentState", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(cache);
+                dynamic entries = _coherentState.GetType().GetField("_entries", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(_coherentState);
+                // entries is of type ICollection<KeyValuePair<object, CacheEntry>>, Here CacheEntry is a private class in MemoryCache. So, it is not accessible. Write a code to interate over entries and get Keys
                 var keys = new HashSet<string>();
-                foreach (KeyValuePair<object, dynamic> pairs in _coherentState._entries)
+                var entriesCollection = entries as ICollection;
+                if (entriesCollection != null)
                 {
-                    keys.Add(Convert.ToString(pairs.Key));
-                }           
-                return keys;
+                    foreach (var entry in entriesCollection)
+                    {
+                        var keyProperty = entry.GetType().GetProperty("Key");
+                        if (keyProperty != null)
+                        {
+                            var key = keyProperty.GetValue(entry);
+                            if (key != null)
+                            {
+                                keys.Add(Convert.ToString(key));
+                            }
+                        }
+                    }
+                }
+                return keys;                
             }
             else
             {
                 throw new NotSupportedException("This method is not supported for the current caching provider");
             }
+        }
+
+        public IDictionary<string, string> GetAll()
+        {
+            var keys = GetAllKeys();
+            var dictionary = new Dictionary<string, string>();
+            foreach (var key in keys)
+            {
+                dictionary.Add(key, _distributedCache.GetString(key));
+            }
+            return dictionary;
         }
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
