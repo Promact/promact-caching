@@ -30,7 +30,7 @@ jobs:
         redis-version: 7
 
     - name: Test
-      run: dotnet test ./Promact.Caching/Promact.Caching.Test/Promact.Caching.Test.csproj --no-build
+      run: dotnet test ./Promact.Caching/Promact.Caching.Test/Promact.Caching.Test.csproj
 
     - name: Pack
       run: dotnet pack ./Promact.Caching/Promact.Caching/Promact.Caching.csproj --no-build --output nupkg
